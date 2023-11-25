@@ -244,5 +244,10 @@ y_pred = model1.predict(X_test)
 model_accuracy = accuracy_score(y_test, y_pred)
 confusion_matrix(y_test, y_pred)
 
-
+# Using max leaf nodes
+model2 = DecisionTreeClassifier(max_leaf_nodes=30, random_state=42)
+model2.fit(X_train, y_train)
+print(model2.score(X_train, y_train))
+print(model2.score(X_val, y_val))
+tree.plot_tree(model2)
 
