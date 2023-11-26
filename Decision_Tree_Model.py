@@ -251,3 +251,19 @@ print(model2.score(X_train, y_train))
 print(model2.score(X_val, y_val))
 tree.plot_tree(model2)
 
+from sklearn.ensemble import RandomForestClassifier
+model3 = RandomForestClassifier(n_estimators=50, n_jobs=-1)
+model3.fit(X_train, y_train)
+print(model3.score(X_train, y_train))
+print(model3.score(X_val, y_val))
+
+# Using max_features
+for mf in [None, 'log2', 'sqrt']:
+    model4 = RandomForestClassifier(n_estimators=50, n_jobs=-1, max_features=mf)
+    model4.fit(X_train, y_train)
+    print("\nFor max_features={}".format(mf))
+    print(model4.score(X_train, y_train))
+    print(model4.score(X_val, y_val))
+    
+ 
+
