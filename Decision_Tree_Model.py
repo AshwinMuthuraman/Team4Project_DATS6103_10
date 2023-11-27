@@ -265,5 +265,19 @@ for mf in [None, 'log2', 'sqrt']:
     print(model4.score(X_train, y_train))
     print(model4.score(X_val, y_val))
     
- 
+
+# Using min_sample_split
+# It holds the minimum sample required to split
+for ms in (10,20,30,40,50,60,70,80,90,100):
+    model5 = RandomForestClassifier(n_estimators=50, n_jobs=-1, min_samples_split=ms, bootstrap=False)
+    model5.fit(X_train, y_train)
+    print("\nFor min_sample={}".format(ms))
+    print(model5.score(X_train, y_train))
+    print(model5.score(X_val, y_val))
+
+
+model6=DecisionTreeClassifier(random_state=42, min_samples_leaf=50)
+model6.fit(X_train, y_train)
+print(model6.score(X_train, y_train))
+print(model6.score(X_val, y_val))
 
