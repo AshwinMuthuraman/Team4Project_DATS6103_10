@@ -22,7 +22,7 @@ print(f'The shape of the dataset is {df.shape}')
 # data types of columns
 print(df.dtypes)
 
-#Checking for duplicate elements
+#Checking for duplicate elementa
 
 def extract_id(text):
     return text.split(':')[-1]  
@@ -79,3 +79,111 @@ if len(column_features) < 15:
 
 plt.tight_layout()
 plt.show()
+
+#Univariate analysis
+# understanding stats of features between hits and flops
+hit_songs = df.drop('target', axis=1).loc[df['target'] == 1]
+flop_songs = df.drop('target', axis=1).loc[df['target'] == 0]
+
+mean_of_hits = pd.DataFrame(hit_songs.describe().loc['mean'])
+mean_of_flops = pd.DataFrame(flop_songs.describe().loc['mean'])
+
+combined_means = pd.concat([mean_of_hits,mean_of_flops, (mean_of_hits-mean_of_flops)], axis = 1)
+combined_means.columns = ['mean_of_hits', 'mean_of_flops', 'difference_of_means']
+print(combined_means)
+
+# F-test to understand strong features against target
+from sklearn.feature_selection import f_classif
+
+X = df.iloc[:, :-1].values
+y = df.iloc[:, -1].values
+
+f_stat, p_value = f_classif(X, y)
+
+feature_list = df.iloc[:, :-1].columns.tolist()
+
+df_stats = pd.DataFrame({
+    'features': feature_list,
+    'f_stat': f_stat,
+    'p_value': p_value
+})
+
+df_stats_sorted = df_stats.sort_values(by='p_value')
+
+print(df_stats_sorted)
+
+# Understanding the range distribution of the strong features 
+features = ['danceability','loudness', 'valence','acousticness','instrumentalness']
+fig, axes = plt.subplots(nrows=1, ncols=len(features), figsize=(15, 5))
+
+for i, column in enumerate(features):
+    sns.boxplot(x='target', y=column, data=df, ax=axes[i])
+    axes[i].set_title(f'{column.capitalize()} vs Target')
+
+plt.tight_layout()
+plt.show()
+
+#Removing negative outliers values in loudness
+loudness_outliers = df[df['loudness']>0].index
+print(loudness_outliers)
+
+df.drop(loudness_outliers,axis=0, inplace=True)
+print(df.shape)
+
+
+#Bivariate analysis
+#correlation
+pearson_corr = df.corr(method='pearson')
+
+plt.figure(figsize=(12, 10))
+plt.title("Absolute Pearson's Correlation Coefficient")
+
+sns.heatmap(
+    pearson_corr.abs(),
+    cmap="coolwarm",
+    square=True,
+    vmin=0,
+    vmax=1,
+    annot=True,
+    fmt=".2f",
+    annot_kws={"size": 10},
+    linewidths=0.5,
+    linecolor='black',
+    cbar_kws={"shrink": 0.8}
+)
+
+plt.xlabel("Features")
+plt.ylabel("Features")
+plt.xticks(rotation=45)
+plt.yticks(rotation=0)
+
+plt.tight_layout()
+plt.show()
+
+
+#trying to understand the corrleation between danceability and energy
+plt.figure(figsize=(8, 6))
+sns.scatterplot(x='danceability', y='energy', data=df, alpha=0.7, marker='o', color='blue')
+plt.title('Energy vs Danceability')
+plt.xlabel('Danceability')
+plt.ylabel('Energy')
+plt.grid(True)
+plt.show()
+
+# understanding how mode and speechiness affect the popularity of a song
+
+plt.figure(figsize=(10, 6))
+custom_palette = "Set2"  # Change the palette to suit your preference
+
+sns.violinplot(x='mode', y='speechiness', hue='target', data=df, palette=custom_palette)
+plt.title('Speechiness across Modes by Target')
+plt.xlabel('Mode')
+plt.ylabel('Speechiness')
+plt.legend(title='Target', loc='upper right')
+plt.grid(axis='y')
+plt.show()
+
+# Understanding how danceability affected the songs popularity
+dance_hit = df[df['target'] ==1]['danceability'].mean()
+print("The mean of danceability of songs that were hits", dance_hit)
+
