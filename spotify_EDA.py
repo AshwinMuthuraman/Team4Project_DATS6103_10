@@ -187,3 +187,44 @@ plt.show()
 dance_hit = df[df['target'] ==1]['danceability'].mean()
 print("The mean of danceability of songs that were hits", dance_hit)
 
+# Logistic Regression
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+# Assuming 'df' is the cleaned dataset
+
+# Splitting the data into features and target variable
+X = df.drop('target', axis=1)
+y = df['target']
+
+# Splitting the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Feature scaling for better model performance
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Creating the logistic regression model
+logistic_model = LogisticRegression(random_state=42, max_iter=1000)
+logistic_model.fit(X_train_scaled, y_train)
+
+# Making predictions on the test set
+y_pred = logistic_model.predict(X_test_scaled)
+
+# Evaluating the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy:.2f}')
+
+# Classification report
+print(classification_report(y_test, y_pred))
+
+# Confusion matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+print('Confusion Matrix:')
+print(conf_matrix)
+
+# Regression Ended
