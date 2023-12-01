@@ -51,4 +51,36 @@ for k in ["linear", "sigmoid", "rbf", "poly"]:
     # print("classification_report", classification_report(y_test, y_test_predictions))
     print("=======================================================")
 # %%
-# TO DO: hyperparameter tuning, PCA, svm visualisation.
+param_grid = {
+    'C': [0.1, 1, 10,],
+    'kernel': ['rbf'],
+    'gamma': [0.1, 0.5, 1]
+}
+
+svm_model = SVC()
+grid_search = GridSearchCV(svm_model, param_grid, cv=10, scoring='accuracy', n_jobs=-1)
+grid_search.fit(X_train_scaled, y_train)
+
+best_params = grid_search.best_params_
+y_pred = grid_search.predict(X_test_scaled)
+accuracy = accuracy_score(y_test, y_pred)
+
+print("best hyperparameters:", best_params)
+print("Accuracy: ", accuracy)
+# %%
+best_model = grid_search.best_estimator_
+
+X_test_scaled = scaler.transform(X_test)
+y_pred = best_model.predict(X_test_scaled)
+
+confusion_matrix = metrics.confusion_matrix(y_true=y_test, y_pred=y_pred)
+plt.subplots(figsize=(4, 4))
+sns.heatmap(confusion_matrix, annot = True, fmt = "d")
+
+plt.xlabel("predicted")
+plt.ylabel("actual")
+plt.title("confusion Matrix")
+plt.show()
+
+# TO DO : PCA and SVM visualisation
+# %%
