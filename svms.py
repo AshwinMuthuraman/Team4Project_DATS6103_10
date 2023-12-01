@@ -67,3 +67,20 @@ accuracy = accuracy_score(y_test, y_pred)
 
 print("best hyperparameters:", best_params)
 print("Accuracy: ", accuracy)
+# %%
+best_model = grid_search.best_estimator_
+
+X_test_scaled = scaler.transform(X_test)
+y_pred = best_model.predict(X_test_scaled)
+
+confusion_matrix = metrics.confusion_matrix(y_true=y_test, y_pred=y_pred)
+plt.subplots(figsize=(4, 4))
+sns.heatmap(confusion_matrix, annot = True, fmt = "d")
+
+plt.xlabel("predicted")
+plt.ylabel("actual")
+plt.title("confusion Matrix")
+plt.show()
+
+# TO DO : PCA and SVM visualisation
+# %%
