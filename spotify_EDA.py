@@ -228,3 +228,47 @@ print('Confusion Matrix:')
 print(conf_matrix)
 
 # Regression Ended
+
+import pymongo
+
+# MongoDB connection details
+connection_string = "mongodb://localhost:27017"
+database_name = "autochurn1"
+
+# Establish a connection to the MongoDB server
+client = pymongo.MongoClient(connection_string)
+
+# Access the specific database
+db = client[database_name]
+
+# Aggregation query to join 'customer' with 'auto_ins' and calculate average 'CURR_ANN_AMT'
+pipeline = [
+    {
+        "$lookup": {
+            "from": "auto_ins",
+            "localField": "ADDRESS_ID",
+            "foreignField": "individual_id",
+            "as": "auto_ins_details"
+        }
+    },
+    {
+        "$unwind": "$auto_ins_details"
+    },
+    {
+        "$match": {
+            "AGE_IN_YEARS": {"$gte": 40, "$lte": 50}
+        }
+    },
+    {
+        "$group": {
+            "_id": None,
+            "average_curr_ann_amt": {"$avg": "$auto_ins_details.CURR_ANN_AMT"}
+        }
+    }
+]
+
+result = db.customer.aggregate(pipeline)
+
+for doc in result:
+    print(doc)
+
