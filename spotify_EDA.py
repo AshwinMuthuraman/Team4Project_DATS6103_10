@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 df = pd.read_csv('dataset-of-00s.csv')
-
 # Verifying if the column names adhere to the correct formatting.
 print(df.columns)
 
@@ -130,7 +129,6 @@ print(loudness_outliers)
 df.drop(loudness_outliers,axis=0, inplace=True)
 print(df.shape)
 
-
 #Bivariate analysis
 #correlation
 pearson_corr = df.corr(method='pearson')
@@ -159,7 +157,6 @@ plt.yticks(rotation=0)
 
 plt.tight_layout()
 plt.show()
-
 
 #trying to understand the corrleation between danceability and energy
 plt.figure(figsize=(8, 6))
@@ -228,5 +225,4 @@ print(classification_report(y_test, y_pred))
 conf_matrix = confusion_matrix(y_test, y_pred)
 print('Confusion Matrix:')
 print(conf_matrix)
-
 # Regression Ended
