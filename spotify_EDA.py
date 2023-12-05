@@ -186,7 +186,7 @@ print("The mean of danceability of songs that were hits", dance_hit)
 
 # Logistic Regression
 
-# Logistic Regression
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
