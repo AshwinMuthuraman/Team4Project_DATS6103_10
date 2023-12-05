@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+
 df = pd.read_csv('dataset-of-00s.csv')
 
 # Verifying if the column names adhere to the correct formatting.
