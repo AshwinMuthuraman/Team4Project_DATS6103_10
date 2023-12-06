@@ -84,3 +84,24 @@ plt.show()
 
 # TO DO : PCA and SVM visualisation
 # %%
+pca = PCA(n_components=3)
+X_train_pca = pca.fit_transform(X_train_scaled)
+X_test_pca = pca.transform(X_test_scaled)
+
+svm_model = SVC(kernel="rbf", C=1, gamma=0.1)
+svm_model.fit(X_train_pca, y_train)
+y_train_predictions = svm_model.predict(X_train_pca)
+y_test_predictions = svm_model.predict(X_test_pca)
+
+print(f"Evaluation metrics for SVM with kernel {k} and PCA (n= 3 features)")
+print("train accuracy", accuracy_score(y_train, y_train_predictions), end = ", ")
+print("test accuracy", accuracy_score(y_test, y_test_predictions))
+
+confusion_matrix = metrics.confusion_matrix(y_true=y_test, y_pred=y_test_predictions)
+plt.subplots(figsize=(4, 4))
+sns.heatmap(confusion_matrix, annot = True, fmt = "d")
+
+plt.xlabel("predicted")
+plt.ylabel("actual")
+plt.title("confusion Matrix")
+plt.show()
