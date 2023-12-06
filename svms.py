@@ -82,7 +82,6 @@ plt.ylabel("actual")
 plt.title("confusion Matrix")
 plt.show()
 
-# TO DO : PCA and SVM visualisation
 # %%
 pca = PCA(n_components=3)
 X_train_pca = pca.fit_transform(X_train_scaled)
@@ -104,4 +103,20 @@ sns.heatmap(confusion_matrix, annot = True, fmt = "d")
 plt.xlabel("predicted")
 plt.ylabel("actual")
 plt.title("confusion Matrix")
+plt.show()
+#%%
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+colors = ['blue', 'red']
+for label, color in zip(np.unique(y_train), colors):
+    indices = np.where(y_train == label)
+    ax.scatter(X_train_pca[indices, 0], X_train_pca[indices, 1], X_train_pca[indices, 2], c=color, label=str(label))
+
+ax.set_xlabel('Principal Component 1')
+ax.set_ylabel('Principal Component 2')
+ax.set_zlabel('Principal Component 3')
+ax.set_title('3D PCA Plot')
+
+plt.legend()  
 plt.show()
