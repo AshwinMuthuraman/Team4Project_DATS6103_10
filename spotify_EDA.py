@@ -6,6 +6,7 @@ df = pd.read_csv('dataset-of-00s.csv')
 # Verifying if the column names adhere to the correct formatting.
 print(df.columns)
 
+
 # Show fundamental details about the dataset.
 print(df.info())
 
