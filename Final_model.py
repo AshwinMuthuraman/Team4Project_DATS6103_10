@@ -1,7 +1,22 @@
+#%%
+import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
-
+from sklearn import svm
+from sklearn import metrics
+from sklearn import tree
+import matplotlib.pyplot as plt
+from sklearn.svm import SVC
+from sklearn.decomposition import PCA
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
+from sklearn.metrics import roc_curve, auc, precision_recall_curve, average_precision_score, precision_score, accuracy_score, f1_score, confusion_matrix, recall_score, classification_report
+import warnings
+warnings.filterwarnings('ignore')
+#%%
 df = pd.read_csv('dataset-of-00s.csv')
 # Verifying if the column names adhere to the correct formatting.
 print(df.columns)
@@ -78,7 +93,7 @@ if len(column_features) < 15:
 
 plt.tight_layout()
 plt.show()
-
+#%%
 #Univariate analysis
 # understanding stats of features between hits and flops
 hit_songs = df.drop('target', axis=1).loc[df['target'] == 1]
@@ -91,6 +106,7 @@ combined_means = pd.concat([mean_of_hits,mean_of_flops, (mean_of_hits-mean_of_fl
 combined_means.columns = ['mean_of_hits', 'mean_of_flops', 'difference_of_means']
 print(combined_means)
 
+#%%
 # F-test to understand strong features against target
 from sklearn.feature_selection import f_classif
 
@@ -129,6 +145,7 @@ print(loudness_outliers)
 df.drop(loudness_outliers,axis=0, inplace=True)
 print(df.shape)
 
+#%%
 #Bivariate analysis
 #correlation
 pearson_corr = df.corr(method='pearson')
@@ -183,15 +200,9 @@ plt.show()
 # Understanding how danceability affected the songs popularity
 dance_hit = df[df['target'] ==1]['danceability'].mean()
 print("The mean of danceability of songs that were hits", dance_hit)
-
+#%%
 
 # Logistic Regression
-
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 # Assuming 'df' is the cleaned dataset
 
@@ -227,19 +238,186 @@ print('Confusion Matrix:')
 print(conf_matrix)
 # Regression Ended
 
+## SVMS ##
 
-## DECISION TREES ##
+#%%
+X = df.drop('target', axis=1)
+y = df['target']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# In search of Best Kernel: 
+for k in ["linear", "sigmoid", "rbf", "poly"]:
+    svm_model = SVC(kernel=k, C=1.0)
+    svm_model.fit(X_train_scaled, y_train)
+
+    y_train_predictions = svm_model.predict(X_train_scaled)
+    y_test_predictions = svm_model.predict(X_test_scaled)
+
+    print("Evaluation metrics for SVM with kernel", k)
+    print("train accuracy", accuracy_score(y_train, y_train_predictions), end = ", ")
+    print("test accuracy", accuracy_score(y_test, y_test_predictions))
+    print("classification_report", classification_report(y_test, y_test_predictions))
+    
+    confusion_matrix = metrics.confusion_matrix(y_true=y_test, y_pred=y_test_predictions)
+    plt.subplots(figsize=(4, 4))
+    sns.heatmap(confusion_matrix, annot = True, fmt = "d")
+    
+    plt.xlabel("predicted")
+    plt.ylabel("actual")
+    plt.title("confusion Matrix")
+    plt.show()
+    print("=======================================================")
+
+#%%
+# In search of best hyperparameters : 
+param_grid = {
+    'C': [0.1, 1, 10,],
+    'kernel': ['rbf'],
+    'gamma': [0.1, 0.5, 1]
+}
+
+svm_model = SVC()
+grid_search = GridSearchCV(svm_model, param_grid, cv=10, scoring='accuracy', n_jobs=-1)
+grid_search.fit(X_train_scaled, y_train)
+
+best_params = grid_search.best_params_
+y_pred = grid_search.predict(X_test_scaled)
+accuracy = accuracy_score(y_test, y_pred)
+
+print("best hyperparameters:", best_params)
+print("Accuracy: ", accuracy)
 
 # %%
-# Importing all required libraries
-from sklearn.model_selection import train_test_split, RandomizedSearchCV
-from sklearn.tree import DecisionTreeClassifier
-from sklearn import tree # for visualization
-from sklearn.metrics import roc_curve, auc, precision_recall_curve, average_precision_score, precision_score, accuracy_score, f1_score, confusion_matrix
-from sklearn.ensemble import RandomForestClassifier
+# Using the best model to get evaluation metrics
+best_model = grid_search.best_estimator_
 
-import warnings
-warnings.filterwarnings('ignore')
+X_test_scaled = scaler.transform(X_test)
+y_pred = best_model.predict(X_test_scaled)
+
+confusion_matrix = metrics.confusion_matrix(y_true=y_test, y_pred=y_pred)
+plt.subplots(figsize=(4, 4))
+sns.heatmap(confusion_matrix, annot = True, fmt = "d")
+
+plt.xlabel("predicted")
+plt.ylabel("actual")
+plt.title("confusion Matrix")
+plt.show()
+
+# %%
+# FEATURE IMPORTANCE USING LINEAR KERNEL
+
+model_linear = SVC(kernel='linear')
+model_linear.fit(X_train_scaled, y_train)
+
+coefficients = model_linear.coef_[0]
+
+feature_names = df.columns
+# Print feature importance
+print("Feature Importance:")
+for feature, importance in zip(feature_names, coefficients):
+    print(f"Feature: {feature}, Coefficient: {importance}")
+
+coefficients = model_linear.coef_[0]
+feature_importance = list(zip(feature_names, coefficients))
+
+feature_importance = [(feature, (importance)) for feature, importance in feature_importance]
+feature_importance = sorted(feature_importance, key=lambda x: x[1], reverse=True)
+features, importance = zip(*feature_importance)
+
+# Plotting feature importance
+plt.figure(figsize=(10, 6))
+plt.barh(range(len(features)), importance, align='center', color='skyblue')
+plt.yticks(range(len(features)), features)
+plt.xlabel('Coefficient Value')
+plt.title('Feature Importance in a Linear SVM')
+plt.show()
+
+#%%
+# SVM Modeling(Using best hyper parameters obtained using GridSearchCV) with top 5 significant features:
+feature_names_list = list(feature_names)
+
+top_features = [feature for feature, _ in feature_importance[:5]]
+
+X_train_top = pd.DataFrame(X_train, columns=feature_names)[top_features].values
+X_test_top = pd.DataFrame(X_test, columns=feature_names)[top_features].values
+
+model_top = SVC(kernel='rbf', C = 1.0, gamma = 0.1)
+model_top.fit(X_train_top, y_train)
+
+accuracy = model_top.score(X_test_top, y_test)
+print(f"Accuracy using top 5 features: {accuracy:.2f}")
+y_pred_top = model_top.predict(X_test_top)
+# Calculate precision, recall, and F1-score
+precision = precision_score(y_test, y_pred_top, average='weighted')
+recall = recall_score(y_test, y_pred_top, average='weighted')
+f1 = f1_score(y_test, y_pred_top, average='weighted')
+print("precision", precision)
+print("recall", recall)
+print("f1", f1)
+
+confusion_matrix = metrics.confusion_matrix(y_true=y_test, y_pred=y_pred_top)
+
+plt.subplots(figsize=(4, 4))
+sns.heatmap(confusion_matrix, annot = True, fmt = "d")
+
+plt.xlabel("predicted")
+plt.ylabel("actual")
+plt.title("confusion Matrix")
+plt.show()
+
+#%%
+# SVM Margin Visualisation Using PCA(n = 2)
+scaler = StandardScaler()
+X_train_std = scaler.fit_transform(X_train)
+X_test_std = scaler.transform(X_test)
+
+# Apply PCA for dimensionality reduction
+pca = PCA(n_components=2)
+X_train_pca = pca.fit_transform(X_train_std)
+X_test_pca = pca.transform(X_test_std)
+
+
+def fit_and_visualize_svm(X, y, C):
+    clf = svm.SVC(kernel="linear")
+    clf.fit(X, y)
+    y_pred = clf.predict(X_test_pca)
+
+    plt.figure(figsize=(8, 6))
+    plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Paired, marker='o', edgecolors='k', label='Training Points')
+    ax = plt.gca()
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+    
+    xx, yy = np.meshgrid(np.linspace(xlim[0], xlim[1], 50), np.linspace(ylim[0], ylim[1], 50))
+    Z = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
+    
+    # Plot decision boundary and margins
+    Z = Z.reshape(xx.shape)
+    plt.contour(xx, yy, Z, colors='k', levels=[-1, 0, 1], alpha=0.5, linestyles=['--', '-', '--'], label='Decision Boundary')
+    
+    # Highlight the support vectors
+    plt.scatter(clf.support_vectors_[:, 0], clf.support_vectors_[:, 1], s=100, facecolors='none', edgecolors='k', label='Support Vectors')
+
+    plt.xlabel('Principal Component 1')
+    plt.ylabel('Principal Component 2')
+    plt.title(f'SVM with C={C}, Accuracy={accuracy_score(y_test, y_pred):.2f}')
+
+    plt.legend()
+    
+    plt.show()
+
+fit_and_visualize_svm(X_train_pca, y_train, C=0.1)  # weak margin
+fit_and_visualize_svm(X_train_pca, y_train, C=1.0)  # Default margin
+fit_and_visualize_svm(X_train_pca, y_train, C=10.0)  # Strong margin
+
+#%%
+## DECISION TREES ##
 
 #%%
 # Function to print metrics
