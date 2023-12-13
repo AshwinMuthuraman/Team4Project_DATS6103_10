@@ -264,9 +264,9 @@ for k in ["linear", "sigmoid", "rbf", "poly"]:
     print("test accuracy", accuracy_score(y_test, y_test_predictions))
     print("classification_report", classification_report(y_test, y_test_predictions))
     
-    confusion_matrix = metrics.confusion_matrix(y_true=y_test, y_pred=y_test_predictions)
+    conf_m = metrics.confusion_matrix(y_true=y_test, y_pred=y_test_predictions)
     plt.subplots(figsize=(4, 4))
-    sns.heatmap(confusion_matrix, annot = True, fmt = "d")
+    sns.heatmap(conf_m, annot = True, fmt = "d")
     
     plt.xlabel("predicted")
     plt.ylabel("actual")
@@ -300,9 +300,9 @@ best_model = grid_search.best_estimator_
 X_test_scaled = scaler.transform(X_test)
 y_pred = best_model.predict(X_test_scaled)
 
-confusion_matrix = metrics.confusion_matrix(y_true=y_test, y_pred=y_pred)
+conf_m = metrics.confusion_matrix(y_true=y_test, y_pred=y_pred)
 plt.subplots(figsize=(4, 4))
-sns.heatmap(confusion_matrix, annot = True, fmt = "d")
+sns.heatmap(conf_m, annot = True, fmt = "d")
 
 plt.xlabel("predicted")
 plt.ylabel("actual")
@@ -361,10 +361,10 @@ print("precision", precision)
 print("recall", recall)
 print("f1", f1)
 
-confusion_matrix = metrics.confusion_matrix(y_true=y_test, y_pred=y_pred_top)
+conf_m = metrics.confusion_matrix(y_true=y_test, y_pred=y_pred_top)
 
 plt.subplots(figsize=(4, 4))
-sns.heatmap(confusion_matrix, annot = True, fmt = "d")
+sns.heatmap(conf_m, annot = True, fmt = "d")
 
 plt.xlabel("predicted")
 plt.ylabel("actual")
