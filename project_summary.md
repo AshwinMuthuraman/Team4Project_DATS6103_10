@@ -188,6 +188,75 @@ By visualizing SVM margins, we gain a deeper understanding of how our model adap
 
 ---
 
-# Conclusions From SVMs:
+---
 
-This detailed analysis of SVM variants, hyperparameter optimization, feature importance, and model complexity visualization provides a comprehensive understanding of the Spotify dataset's classification task. The findings contribute insights into the nuanced dynamics of SVM performance, facilitating informed decision-making in music classification applications.
+# Decision Trees
+
+## Generic Model
+
+We first created a generic model with default parameters which resulted in a tree of depth 24. The accuracy is just 75%. 
+
+![Generic_Tree](Generic_Tree.png)
+
+
+![Alt text](Feautre_imp1.png)
+
+This helps to answer our first SMART question ("What audio features (e.g. acoustics, instrumentals, valence, tempo) are most strongly associated with hit songs in this dataset?"). Instrumentalness and Danceability are primary features that are strongly associated with song's success. 
+
+**Parameters**
+- max_depth
+- max_leaf_nodes
+- max_features
+- min_sample_split
+- min_sample_leaf
+- min_impurity_decrease  
+- bootstrap
+
+## Pruned Tree
+
+Then, we chose max_depth as parameter and tried to find the depth with maximum accuracy using a FOR loop. The result showed maximum accuracy at maximum depth = 3. 
+
+We build a tree with max depth 3, and these were the results: 
+
+![Tree2](Tree_depth3.png)
+
+![Alt text](class_report1.png)
+
+In conclusion, the classification model with depth=3 demonstrates a commendable overall performance with an accuracy of 83%. The precision values for both classes indicate a high level of correctness in predictions, with 88% for class 0 and 79% for class 1. The model exhibits strong recall, particularly noteworthy for class 1 at 90%, signifying its effectiveness in identifying positive instances. The F1-scores, balancing precision and recall, are 0.82 for class 0 and 0.84 for class 1. The macro and weighted averages, both at 0.84, reinforce the consistency of the model's performance across classes, considering the dataset's class imbalance. While accuracy provides an overall measure, stakeholders should weigh the importance of precision and recall based on the specific goals of the classification task. Overall, these results suggest a robust model, but further consideration of the application context is advised to align with task-specific objectives.
+
+This practice could be done with other parameters as well.
+
+After this, we used Bagging Ensemble technique - Random Forests. 
+
+---
+# Random Forests
+
+## Default Parameters 
+
+During training, random forests (also known as random choice forests) generate a huge number of decision trees to use as an ensemble learning approach for classification, regression, and other problems. The output of a random forest is the class selected by the vast majority of trees, which is useful for solving classification issues. Decision trees may overfit their training data, although random decision forests mitigate this problem. Random forests are more effective than decision trees in most cases.
+
+![Alt text](class_report2.png)
+
+With default parameters and 50 estimator trees, we build random forest model. The classification model showcases commendable performance with an overall accuracy of 85%. It effectively balances precision and recall for both classes, indicating its ability to correctly identify instances while minimizing false positives and negatives. The model's consistent performance is reflected in the macro-average and weighted-average metrics, both at 85%. 
+
+## Cross Validation using RandomSearchCV
+
+We also performed cross validation using RandomSearch. And finally we built the final model with the best params found random grid.
+
+![Alt text](final_tree.png)
+
+![Alt text](auc.png)
+
+The Area Under the Receiver Operating Characteristic Curve reflects the model's ability to distinguish between positive and negative instances, with a higher AUC value suggesting superior separation between the classes. In this case, the AUC of 0.83 signifies a robust predictive capacity, where the model consistently assigns higher probabilities to positive instances compared to negative instances.
+
+---
+
+# Conclusion
+
+- Each model was scrutinized for its strengths and limitations, enabling a nuanced understanding of their effectiveness.
+
+- This detailed analysis of SVM variants, hyperparameter optimization, feature importance, and model complexity visualization provides a comprehensive understanding of the Spotify dataset's classification task. The findings contribute insights into the nuanced dynamics of SVM performance, facilitating informed decision-making in music classification applications.
+
+- Moving to decision trees, a generic model with default parameters revealed a deep tree with limited accuracy. Pruning the tree at a depth of 3 significantly improved overall performance, achieving an accuracy of 83% with balanced precision and recall. Further exploration involved random forests, where default parameters and cross-validation using RandomSearchCV demonstrated solid accuracy metrics and an AUC of 0.83, indicating robust predictive capacity.
+
+- In conclusion, the research contributes a nuanced understanding of various machine learning models' performance in predicting song success where all three models perform similar with an accuracy of over 85%. While each model exhibited strengths, the choice of the most suitable model depends on the specific goals and characteristics of the music dataset.
