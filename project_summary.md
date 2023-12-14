@@ -3,6 +3,7 @@ output:
   pdf_document: default
   html_document: default
 ---
+
 # Abstract:
 
 In the evolving music industry, predicting song success is crucial. This research explores machine learning models—logistic regression, decision trees, support vector machines (SVM), random forests, and gradient boosting—to uncover their effectiveness in discerning hit songs. The study aims to provide insights for informed decision-making in the music domain.
@@ -22,6 +23,47 @@ The research employs logistic regression for baseline modeling, decision trees f
 # Structure:
 
 The paper proceeds with an overview of the dataset, exploratory data analysis, and detailed analyses of logistic regression, decision trees, SVM, random forests, and gradient boosting. A comparative analysis follows, concluding with key findings and implications. This research contributes insights at the intersection of music and machine learning, shaping the landscape of predictive modeling in song success.
+
+---
+# Logistic Regression Modeling:
+
+This section analyzes the performance of the logistic regression model used for predicting hit songs.
+
+## Model Performance Metrics
+
+* **Accuracy:** 0.84
+
+### Hits:
+
+* **Precision:** 0.80
+* **Recall:** 0.90
+* **F1-score:** 0.85
+* **Support:** 588
+
+### Non-hits:
+
+* **Precision:** 0.88
+* **Recall:** 0.78
+* **F1-score:** 0.83
+* **Support:** 580
+
+## Performance metrics :
+
+![performance_metrics](performance_metrics.png)
+![roc_curve](auc.png)
+
+## Interpretation
+
+* The accuracy of the model is 84%, indicating that it correctly predicts 84% of the songs.
+* The recall for hits is 90%, meaning that the model correctly identifies 90% of the hit songs.
+* The precision for hits is 80%, signifying that 80% of the songs predicted as hits are actually hits.
+* The F1-score for hits is 85%, a harmonic mean of precision and recall, indicating a good balance between the two metrics.
+* The confusion matrix shows that the model has more true negatives (correctly predicted non-hits) than false positives (incorrectly predicted hits). This suggests that the model is better at identifying non-hits than hits.
+* The AUC of 0.91 indicates that the model is good at distinguishing between hits and non-hits.
+
+## Observations
+
+The logistic regression model performs well on this task, with an accuracy of 84% and a high recall for hits (90%). However, the model is better at identifying non-hits than hits, as evidenced by the higher precision for non-hits (88%) and the confusion matrix. This suggests that there may be some room for improvement in the model's ability to identify hit songs.
 
 ---
 
