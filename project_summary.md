@@ -32,13 +32,13 @@ The research employs logistic regression for baseline modeling, decision trees f
 
 The paper proceeds with an overview of the dataset, exploratory data analysis, and detailed analyses of logistic regression, decision trees, SVM, random forests, and gradient boosting. A comparative analysis follows, concluding with key findings and implications. This research contributes insights at the intersection of music and machine learning, shaping the landscape of predictive modeling in song success.
 
-# Dataset
+# Dataset:
 
 The dataset utilized is the "Spotify Hit Predictor Dataset (1960-2019)," sourced from Kaggle. This dataset contains various attributes extracted from tracks using Spotify's Web API. The tracks are categorized as either '1' (indicating a 'Hit') or '0' (indicating a 'Flop') based on specific criteria set by the dataset's author.
 
 This dataset lends itself to the creation of a classification model aimed at predicting whether a given track will achieve 'Hit' status or not. The dataset encompasses a range of features, including Track name, Artist, URI, Danceability, Energy, Key, Loudness, Mode, Speechiness, Acousticness, Instrumentalness, Liveness, Valence, Tempo, Duration_ms, Time_Signature, Chorus_Hit, Sections, and the Target variable.
 
-# SMART questions
+# SMART questions:
 
 1. What are the top three audio features strongly associated with hit songs?
 
@@ -52,13 +52,10 @@ This dataset lends itself to the creation of a classification model aimed at pre
 
 The questions were developed to address specific aspects of our analysis and decision-making process. We aimed to understand the key audio features influencing song success and to select the best machine learning model for prediction. Each question was tailored to extract precise information relevant to our research objectives. For example, we asked about the top hit-associated audio features to pinpoint influential factors, quantified performance improvements to gauge the impact of optimization, and compared metrics to evaluate model effectiveness. These questions were designed to guide our investigation and ensure that we obtained relevant insights to make informed decisions.
 
-# Exploratory Data Analysis
+# Exploratory Data Analysis:
 Exploratory Data Analysis (EDA) was conducted to gain insights into the dataset's statistics, structure, and the significance of different feature values. During this process, skewed data in several features were normalized. Additionally, through univariate analysis and the F-test, we identified the most influential features.
 
-From our comparative analysis, we made intriguing observations. Hit songs consistently exhibit significantly higher volume levels compared to flop songs, as indicated by the substantial difference in loudness.
-
-                mean_of_hits    mean_of_flops    difference_of_means
-loudness        -5.670281        -9.229477         3.559196
+From our comparative analysis, we made intriguing observations. There was a significant contrast in loudness between hit and flop songs, with hit songs having a substantially higher loudness level of 3.56 units when compared to flop songs
 
 Additionally, the "key" feature appears to have a relatively high p-value (0.755) in the F-test, suggesting it may not be statistically significant in distinguishing between hit and flop songs.
 
@@ -340,7 +337,7 @@ The Area Under the Receiver Operating Characteristic Curve reflects the model's 
 
 - In conclusion, the research contributes a nuanced understanding of various machine learning models' performance in predicting song success where all three models perform similar with an accuracy of over 85%. While each model exhibited strengths, the choice of the most suitable model depends on the specific goals and characteristics of the music dataset.
 
-# References
+# References:
 
 1. Lei, C., Deng, J., Cao, K., Xiao, Y., Ma, L., Wang, W., Ma, T., & Shu, C. (2019). A comparison of random forest and support vector machine approaches to predict coal spontaneous combustion in gob. Fuel, 239, 297-311.
 
