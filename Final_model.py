@@ -14,6 +14,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import roc_curve, auc, precision_recall_curve, average_precision_score, precision_score, accuracy_score, f1_score, confusion_matrix, recall_score, classification_report
+from sklearn.metrics import classification_report
 import warnings
 warnings.filterwarnings('ignore')
 #%%
@@ -627,3 +628,11 @@ plt.title('Precision-Recall Curve')
 plt.legend(loc="lower right")
 plt.show()
 # %%
+y_pred0 = model0.predict(X_test)
+y_pred1 = model1.predict(X_test)
+y_pred2 = model2.predict(X_test)
+y_pred3 = final_model.predict(X_test)
+print(classification_report(y_test,y_pred0))
+print(classification_report(y_test,y_pred1))
+print(classification_report(y_test,y_pred2))
+print(classification_report(y_test,y_pred3))
