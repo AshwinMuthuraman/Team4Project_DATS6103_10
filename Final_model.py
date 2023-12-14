@@ -67,7 +67,7 @@ df = df.drop(['track', 'artist', 'uri'], axis=1)
 print(df.target.value_counts(normalize=True))
 colors = ["#3498db", "#e74c3c"]  
 
-sns.countplot(x='target', data=df, hue='target', palette=colors, legend=False)
+sns.countplot(x='target', data=df, hue='target', palette=colors)
 plt.show()
 
 # understanding the distribution of all features
@@ -526,9 +526,6 @@ model2.fit(X_train, y_train)
 y_pred = model2.predict(X_test)
 model2_acc, model2_pre, model2_f1 = print_metric(y_test, y_pred)
 
-plt.figure(figsize=(80,80))
-tree.plot_tree(model2, feature_names=X_train.columns, filled=True)
-
 cnf=confusion_matrix(y_test, y_pred)
 
 plt.figure(figsize=(6, 4))
@@ -577,8 +574,8 @@ param={
 grid = RandomizedSearchCV(n_iter=500, estimator=RandomForestClassifier(random_state=42), param_distributions=param, scoring='accuracy', n_jobs=-1, cv=5)
 grid.fit(X_train, y_train)
 
-print("The best params chosen are {}".fomrat(grid.best_params_))
-print("The best score is {}".fomrat(grid.best_score_))
+print("The best params chosen are {}".format(grid.best_params_))
+print("The best score is {}".format(grid.best_score_))
 
 # %%
 # Best model so far with best_params
@@ -595,6 +592,10 @@ y_pred=final_model.predict(X_test)
 
 final_model_acc, final_model_pre, final_model_f1 = print_metric(y_test, y_pred)
 cnf=confusion_matrix(y_test, y_pred)
+
+plt.figure(figsize=(80,80))
+final_tree = final_model.estimators_[0]
+tree.plot_tree(final_tree, feature_names=X_train.columns, filled=True)
 
 plt.figure(figsize=(6, 4))
 sns.heatmap(cnf, annot=True, fmt="d", cmap="Blues", cbar=False, 
@@ -625,4 +626,4 @@ plt.ylabel('Precision')
 plt.title('Precision-Recall Curve')
 plt.legend(loc="lower right")
 plt.show()
-
+# %%
