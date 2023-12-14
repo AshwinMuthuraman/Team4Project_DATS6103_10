@@ -50,7 +50,6 @@ This section analyzes the performance of the logistic regression model used for 
 ## Performance metrics :
 
 ![performance_metrics](performance_metrics.png)
-![roc_curve](auc.png)
 
 ## Interpretation
 
