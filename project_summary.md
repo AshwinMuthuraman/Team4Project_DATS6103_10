@@ -4,6 +4,14 @@ output:
   html_document: default
 ---
 
+# Decoding Decades: Developing a Predictive Model for Musical Success Using Spotify Data
+
+## Team Members :
+- Ashwin Muthuraman
+- Kanishk Goel
+- Ram Mannuru
+- Srinivas
+
 # Abstract:
 
 In the evolving music industry, predicting song success is crucial. This research explores machine learning models—logistic regression, decision trees, support vector machines (SVM), random forests, and gradient boosting—to uncover their effectiveness in discerning hit songs. The study aims to provide insights for informed decision-making in the music domain.
